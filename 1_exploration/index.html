@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Exploration</title>
+	<script src="https://d3js.org/d3.v4.js"></script>
+</head>
+<body>
+
+<div class="graph"></div>
+
+<script type="text/javascript">
+	var wk = {};
+
+	wk.data = [2,3,0,10,4,5];
+
+	wk.container = d3.select(".graph"); // Select container, aka canvas
+
+	wk.bar = wk.container.selectAll("div"); // Define selection to which data will be joined
+
+	wk.barUpdate = wk.bar.data(wk.data); // Joins data to the selection
+
+	wk.barEnter = wk.barUpdate.enter().append("div"); // Appends divs to Enter selection
+
+	// Having instantiated the elements (divs), is time to modify their properties
+
+	
+	wk.barEnter.style("background-color", "red");
+
+	
+</script>
+
+</body>
+</html>
