@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Exploration</title>
+	<script src="https://d3js.org/d3.v4.js"></script>
+
+	<style>
+		.bar {
+			fill: steelBlue;
+		}
+	</style>
+</head>
+<body>
+
+<h1>Challenge 1: Map</h1>
+
+<div class="graph"></div>
+
+
+<script type="text/javascript">
+
+  var canvas = d3.select("body").append("svg").attr("height", 700).attr("width", 700);
+
+  d3.json("colombia.json", function(error, data){
+    console.log(data[0].geometry.coordinates);
+
+    var group = canvas.selectAll("g").data(data[0]).enter().append("g");
+
+    var projection = d3.geoMercator().scale(7300);
+    var path = d3.geoPath().projection(projection);
+
+    var areas = group.append("path").attr("d", path).attr("fill", "steelblue");
+
+  });
+
+</script>
+
+</body>
+</html>
