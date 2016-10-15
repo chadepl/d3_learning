@@ -7,35 +7,64 @@
 </head>
 <body>
 
+<style>
+    svg text {
+        font: 10px sans-serif;
+        text-anchor: middle;
+        fill: white;
+    }
+
+    .axis text{
+        fill: #000;
+        font: 10px sans-serif;
+    }
+
+    .axis line, .axis path{
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+</style>
+
 <script type="text/javascript">
 
-    var width = 700;
-    var height = 700;
+    var margins = {top: 20, right: 30, bottom: 30, left: 40};
+    var width = 960 - margins.left - margins.right;
+    var height = 500 - margins.top - margins.bottom;
 
-    var svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
+    var svg = d3.select("body").append("svg")
+            .attr("width", width + margins.left + margins.right)
+            .attr("height", height + margins.top + margins.bottom)
+            .append("g").attr("width", width).attr("height", height)
+            .attr("transform", "translate(" + margins.right + "," + margins.top + ")");
 
-    var xscale = d3.scaleBand().rangeRound([0, width], .1);
 
-    var yscale = d3.scaleLinear().range([0, height]);
+    var xScale = d3.scaleBand().rangeRound([margins.left, width + margins.left], .1);
+
+    var xAxis = d3.axisBottom(xScale);
+
+    var yScale = d3.scaleLinear().range([height + margins.top, margins.top]);
+
+    var yAxis = d3.axisLeft(yScale);
 
     d3.tsv("data.tsv", function(error, data) {
 
         var barWidth = width / data.length;
 
-        xscale.domain(data.map(function(d){return d.name;}));
-        yscale.domain([0, d3.max(data, function(d){ return d.value;})]);
+        xScale.domain(data.map(function(d){return d.name;}));
+        yScale.domain([0, d3.max(data, function(d){ return d.value;})]);
 
         var bar = svg.selectAll("g")
                 .data(data).enter()
                 .append("g")
-                .attr("transform", function(d,i){return "translate("+ xscale(d.name) + ", 0)";})
+                .attr("transform", function(d,i){return "translate("+ xScale(d.name) + ", 0)";})
                 .attr("fill","steelblue");
 
         bar.append("rect")
-                .attr("width", barWidth-1)
-                .attr("height", function(d){ return height - yscale(d.value);})
+                .attr("width", xScale.bandwidth() - 1)
+                .attr("height", function(d){ return height - yScale(d.value);})
                 .attr("class", "bar")
-                .attr("y", function(d){return yscale(d.value);})
+                .attr("y", function(d){return yScale(d.value);})
                 .on("mouseover", function(d){
                     d3.select(this).attr("fill", "red");
                 })
@@ -43,11 +72,21 @@
                     d3.select(this).attr("fill", "steelblue");
                 });
 
-        bar.append("text")
+        /*bar.append("text")
                 .attr("x", barWidth / 2)
-                .attr("y", function(d){return yscale(d.value) + 10;})
-                .text(function(d){ return d.value; });
+                .attr("y", function(d){return yScale(d.value) + 10;})
+                .attr("dx", ".75em")
+                .text(function(d){ return d.value; });*/
 
+        svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0, "+ height + ")")
+                .call(xAxis);
+
+        svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate("+ margins.left +", 0)")
+                .call(yAxis);
 
     });
 
