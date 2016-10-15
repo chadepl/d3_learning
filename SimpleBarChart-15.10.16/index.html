@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://d3js.org/d3.v4.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var width = 700;
+    var height = 700;
+
+    var svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
+
+    var xscale = d3.scaleBand().rangeRound([0, width], .1);
+
+    var yscale = d3.scaleLinear().range([0, height]);
+
+    d3.tsv("data.tsv", function(error, data) {
+
+        var barWidth = width / data.length;
+
+        xscale.domain(data.map(function(d){return d.name;}));
+        yscale.domain([0, d3.max(data, function(d){ return d.value;})]);
+
+        var bar = svg.selectAll("g")
+                .data(data).enter()
+                .append("g")
+                .attr("transform", function(d,i){return "translate("+ xscale(d.name) + ", 0)";})
+                .attr("fill","steelblue");
+
+        bar.append("rect")
+                .attr("width", barWidth-1)
+                .attr("height", function(d){ return height - yscale(d.value);})
+                .attr("class", "bar")
+                .attr("y", function(d){return yscale(d.value);})
+                .on("mouseover", function(d){
+                    d3.select(this).attr("fill", "red");
+                })
+                .on("mouseout", function(d){
+                    d3.select(this).attr("fill", "steelblue");
+                });
+
+        bar.append("text")
+                .attr("x", barWidth / 2)
+                .attr("y", function(d){return yscale(d.value) + 10;})
+                .text(function(d){ return d.value; });
+
+
+    });
+
+    function type(){
+        return {
+            name : d.name,
+            value : +d.value
+        };
+    }
+
+</script>
+
+</body>
+</html>
