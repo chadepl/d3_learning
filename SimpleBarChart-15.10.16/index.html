@@ -33,9 +33,9 @@
 
 <script type="text/javascript">
 
-    var margins = {top: 20, right: 30, bottom: 30, left: 40};
-    var width = 960 - margins.left - margins.right;
-    var height = 500 - margins.top - margins.bottom;
+    var margins = {top: 20, right: 30, bottom: 30, left: 40},
+        width = 960 - margins.left - margins.right,
+        height = 500 - margins.top - margins.bottom;
 
     var svg = d3.select("body").append("svg")
             .attr("width", width + margins.left + margins.right)
@@ -44,11 +44,11 @@
             .attr("transform", "translate(" + margins.right + "," + margins.top + ")");
 
 
-    var xScale = d3.scaleBand().rangeRound([margins.left, width + margins.left], .1);
+    var xScale = d3.scaleBand().rangeRound([0, width], .1);
 
     var xAxis = d3.axisBottom(xScale);
 
-    var yScale = d3.scaleLinear().range([height + margins.top, margins.top]);
+    var yScale = d3.scaleLinear().range([height, 0]);
 
     var yAxis = d3.axisLeft(yScale);
 
